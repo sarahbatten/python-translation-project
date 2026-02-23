@@ -3,9 +3,20 @@
 import sys
 
 def translate_sequence(rna_sequence, genetic_code):
-
+    rna_sequence = rna_sequence.upper()
+    if len(rna_sequence) < 3:
+        return ""
+    protein = ""
+    for i in range(0, len(rna_sequence), 3):
+        codon = rna_sequence[i:i+3]
+        if  len(codon) < 3:
+            break
+        amino_acid = genetic_code[codon]
+        if amino_acid == "*":
+            break
+        protein += amino_acid
+    return protein
     pass
-
 def get_all_translations(rna_sequence, genetic_code):
     """Get a list of all amino acid sequences encoded by an RNA sequence.
 
@@ -46,23 +57,14 @@ def get_reverse(sequence):
 
 def get_complement(sequence):
     sequence = sequence.upper()
-    complementary = str.maketrans('AUCGaucg', 'UAGCuagc')
+    complementary = str.maketrans('AUCG', 'UAGC')
     return sequence.translate(complementary)
     pass
 
 def reverse_and_complement(sequence):
-    """Get the reversed and complemented form of a `sequence` of nucleotides.
-
-    Returns a string that is the reversed and complemented sequence
-    of `sequence`.
-
-    If `sequence` is empty, an empty string is returned.
-
-    Examples
-    --------
-    >>> reverse_and_complement('AUGC')
-    'GCAU'
-    """
+    sequence = sequence.upper()
+    complementary = str.maketrans('AUCG', 'UAGC')
+    return sequence.translate(complementary)[::-1]
     pass
 
 def get_longest_peptide(rna_sequence, genetic_code):
