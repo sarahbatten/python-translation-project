@@ -18,36 +18,28 @@ def translate_sequence(rna_sequence, genetic_code):
     return protein
     pass
 def get_all_translations(rna_sequence, genetic_code):
-    """Get a list of all amino acid sequences encoded by an RNA sequence.
+    rna_sequence = rna_sequence.upper()
+    translations = []
+    for frame in range(3):
+        for i in range(frame, len(rna_sequence) - 2, 3):
+            codon = rna_sequence[i:i+3]
 
-    All three reading frames of `rna_sequence` are scanned from 'left' to
-    'right', and the generation of a sequence of amino acids is started
-    whenever the start codon 'AUG' is found. The `rna_sequence` is assumed to
-    be in the correct orientation (i.e., no reverse and/or complement of the
-    sequence is explored).
+            if codon == "AUG":
+                protein = ""
 
-    The function returns a list of all possible amino acid sequences that
-    are encoded by `rna_sequence`.
+                for j in range(i, len(rna_sequence) - 2,3):
+                    current_codon = rna_sequence[j:j+3]
+                    amino_acid = genetic_code.get(current_codon)
 
-    If no amino acids can be translated from `rna_sequence`, an empty list is
-    returned.
+                    if amino_acid is None:
+                        break
+                    if amino_acid == "*":
+                        break
+                    protein += amino_acid
+                if protein:
+                    translations.append(protein)
+    return translations
 
-    Parameters
-    ----------
-    rna_sequence : str
-        A string representing an RNA sequence (upper or lower-case).
-
-    genetic_code : dict
-        A dictionary mapping all 64 codons (strings of three RNA bases) to
-        amino acids (string of single-letter amino acid abbreviation). Stop
-        codons should be represented with asterisks ('*').
-
-    Returns
-    -------
-    list
-        A list of strings; each string is an sequence of amino acids encoded by
-        `rna_sequence`.
-    """
     pass
 
 def get_reverse(sequence):
@@ -68,6 +60,11 @@ def reverse_and_complement(sequence):
     pass
 
 def get_longest_peptide(rna_sequence, genetic_code):
+    rna_sequence = rna_sequence.upper()
+    complementary = str.maketrans('AUCG', 'UAGC')
+    reverse_complement = rna_sequence.translate(complementary)[::-1]
+
+
     """Get the longest peptide encoded by an RNA sequence.
 
     Explore six reading frames of `rna_sequence` (the three reading frames of
